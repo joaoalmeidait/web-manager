@@ -1,4 +1,4 @@
-package com.werbmanager.web_manager;
+package com.webmanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.werbmanager.web_manager;
+package com.webmanager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

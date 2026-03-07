@@ -1,7 +1,6 @@
 package com.webmanager.repository;
 
 import com.webmanager.entity.Employee;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -18,7 +17,6 @@ class EmployeeRepositoryTest {
     private EmployeeRepository repository;
 
     @Test
-    @DisplayName("Should find employee by email")
     void shouldFindEmployeeByEmail() {
 
         Employee employee = Employee.builder()
@@ -36,7 +34,6 @@ class EmployeeRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should return true when email exists")
     void shouldReturnTrueWhenEmailExists() {
 
         Employee employee = new Employee();
@@ -52,7 +49,6 @@ class EmployeeRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should return empty when email not found")
     void shouldReturnEmptyWhenEmailNotFound() {
 
         Optional<Employee> result = repository.findByEmail("notfound@email.com");
@@ -61,7 +57,6 @@ class EmployeeRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should not allow duplicate emails")
     void shouldNotAllowDuplicateEmails() {
 
         Employee employee1 = Employee.builder()

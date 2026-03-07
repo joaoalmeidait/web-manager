@@ -2,9 +2,13 @@ package com.webmanager.controller;
 
 import com.webmanager.dto.EmployeeRequestDTO;
 import com.webmanager.dto.EmployeeResponseDTO;
+import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +29,8 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeResponseDTO>> listAllEmployees(){
-        var employees =  employeeService.listAllEmployees();
+    public ResponseEntity<PageResponseDTO<EmployeeResponseDTO>> listAllEmployees(@PageableDefault(size = 10) Pageable pageable){
+        var employees =  employeeService.listAllEmployees(pageable);
         return ResponseEntity.ok(employees);
     }
 

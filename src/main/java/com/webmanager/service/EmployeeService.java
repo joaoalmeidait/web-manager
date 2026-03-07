@@ -2,12 +2,16 @@ package com.webmanager.service;
 
 import com.webmanager.dto.EmployeeRequestDTO;
 import com.webmanager.dto.EmployeeResponseDTO;
+import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.entity.Employee;
 import com.webmanager.exception.EmailAlreadyExistsExecption;
 import com.webmanager.exception.EmployeeNotFoundExecption;
 import com.webmanager.mapper.EmployeeMapper;
+import com.webmanager.mapper.PageMapper;
 import com.webmanager.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,11 +33,10 @@ public class EmployeeService {
         return mapper.toResponse(savedEmployee);
     }
 
-    public List<EmployeeResponseDTO> listAllEmployees(){
-        return repository.findAll()
-                .stream()
-                .map(mapper::toResponse)
-                .toList();
+    public PageResponseDTO<EmployeeResponseDTO> listAllEmployees(Pageable pageable){
+        var page = repository.findAll(pageable)
+                .map(mapper::toResponse);
+        return PageMapper.toPageResponse(page);
     }
 
     public EmployeeResponseDTO findByEmail(String email) {

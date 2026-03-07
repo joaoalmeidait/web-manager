@@ -2,6 +2,7 @@ package com.webmanager.service;
 
 import com.webmanager.dto.EmployeeRequestDTO;
 import com.webmanager.dto.EmployeeResponseDTO;
+import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.entity.Employee;
 import com.webmanager.exception.EmailAlreadyExistsExecption;
 import com.webmanager.exception.EmployeeNotFoundExecption;
@@ -12,7 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -101,5 +107,44 @@ class EmployeeServiceTest {
 
         assertThatThrownBy(() -> service.findByEmail("notfound@email.com"))
                 .isInstanceOf(EmployeeNotFoundExecption.class);
+    }
+
+    @Test
+    void shouldReturnPagedEmployees() {
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Employee employee1 = Employee.builder()
+                .name("João")
+                .email("joao@email.com")
+                .role("Developer")
+                .build();
+
+        Employee employee2 = Employee.builder()
+                .name("Maria")
+                .email("maria@email.com")
+                .role("Manager")
+                .build();
+
+        Page<Employee> page = new PageImpl<>(List.of(employee1, employee2));
+
+        EmployeeResponseDTO response1 =
+                new EmployeeResponseDTO(UUID.randomUUID(), "João", "joao@email.com", "Developer", null);
+
+        EmployeeResponseDTO response2 =
+                new EmployeeResponseDTO(UUID.randomUUID(), "Maria", "maria@email.com", "Manager", null);
+
+        when(repository.findAll(pageable)).thenReturn(page);
+        when(mapper.toResponse(employee1)).thenReturn(response1);
+        when(mapper.toResponse(employee2)).thenReturn(response2);
+
+        PageResponseDTO<EmployeeResponseDTO> result =
+                service.listAllEmployees(pageable);
+
+        assertThat(result.content()).hasSize(2);
+        assertThat(result.content().get(0).email()).isEqualTo("joao@email.com");
+        assertThat(result.content().get(1).email()).isEqualTo("maria@email.com");
+
+        verify(repository).findAll(pageable);
     }
 }

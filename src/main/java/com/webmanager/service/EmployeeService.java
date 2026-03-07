@@ -5,12 +5,12 @@ import com.webmanager.dto.EmployeeResponseDTO;
 import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.entity.Employee;
 import com.webmanager.entity.Manager;
-import com.webmanager.exception.EmailAlreadyExistsExecption;
 import com.webmanager.exception.UserNotFoundException;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.mapper.PageMapper;
 import com.webmanager.repository.EmployeeRepository;
 import com.webmanager.repository.ManagerRepository;
+import com.webmanager.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,10 +24,11 @@ public class EmployeeService {
     private final EmployeeRepository repository;
     private final EmployeeMapper mapper;
     private final ManagerRepository managerRepository;
+    private final ValidationUtils validationUtils;
 
     public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto){
-        validateEmail(dto);
 
+        validationUtils.validateUniqueEmail(dto.email(), () -> repository.existsByEmail(dto.email()));
         Manager manager = resolveManager(dto.managerId());
 
         var entity = mapper.toEntity(dto);
@@ -36,12 +37,6 @@ public class EmployeeService {
         Employee savedEmployee = repository.save(entity);
 
         return mapper.toResponse(savedEmployee);
-    }
-
-    private void validateEmail(EmployeeRequestDTO dto) {
-        if (repository.existsByEmail(dto.email())){
-            throw new EmailAlreadyExistsExecption("Email já cadastrado.");
-        }
     }
 
     public PageResponseDTO<EmployeeResponseDTO> listAllEmployees(Pageable pageable){

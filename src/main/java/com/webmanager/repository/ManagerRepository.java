@@ -9,4 +9,7 @@ import java.util.UUID;
 public interface ManagerRepository  extends JpaRepository<Manager, UUID> {
 
     Optional<Manager> findByName(String name);
+
+    boolean existsByEmail(String email);
+
 }

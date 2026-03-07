@@ -6,7 +6,7 @@ import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.entity.Employee;
 import com.webmanager.entity.Manager;
 import com.webmanager.exception.EmailAlreadyExistsExecption;
-import com.webmanager.exception.UserNotFound;
+import com.webmanager.exception.UserNotFoundException;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.mapper.PageMapper;
 import com.webmanager.repository.EmployeeRepository;
@@ -52,7 +52,7 @@ public class EmployeeService {
 
     public EmployeeResponseDTO findByEmail(String email) {
         var employee = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFound("Funcionário não encontrado."));
+                .orElseThrow(() -> new UserNotFoundException("Funcionário não encontrado."));
 
         return mapper.toResponse(employee);
     }
@@ -61,10 +61,10 @@ public class EmployeeService {
 
         if (managerId != null) {
             return managerRepository.findById(managerId)
-                    .orElseThrow(() -> new UserNotFound("Manager não encontrado."));
+                    .orElseThrow(() -> new UserNotFoundException("Manager não encontrado."));
         }
 
         return managerRepository.findByName("Sistema")
-                .orElseThrow(() -> new UserNotFound("Manager padrão não encontrado."));
+                .orElseThrow(() -> new UserNotFoundException("Manager padrão não encontrado."));
     }
 }

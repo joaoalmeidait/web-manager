@@ -7,7 +7,7 @@ import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.entity.Employee;
 import com.webmanager.entity.Manager;
 import com.webmanager.exception.EmailAlreadyExistsExecption;
-import com.webmanager.exception.UserNotFound;
+import com.webmanager.exception.UserNotFoundException;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.repository.EmployeeRepository;
 import com.webmanager.repository.ManagerRepository;
@@ -113,7 +113,7 @@ class EmployeeServiceTest extends BaseTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.findByEmail("notfound@email.com"))
-                .isInstanceOf(UserNotFound.class);
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test

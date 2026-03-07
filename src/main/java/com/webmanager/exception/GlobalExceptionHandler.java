@@ -13,8 +13,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
-    @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<String> handleEmployeeNotFound(UserNotFound ex){
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleEmployeeNotFound(UserNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

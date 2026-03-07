@@ -7,19 +7,17 @@ import com.webmanager.exception.EmailAlreadyExistsExecption;
 import com.webmanager.exception.EmployeeNotFoundExecption;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
 
-    @Autowired
-    private EmployeeRepository repository;
-
-    @Autowired
-    private EmployeeMapper mapper;
+    private final EmployeeRepository repository;
+    private final EmployeeMapper mapper;
 
     public EmployeeResponseDTO createEmployee(EmployeeRequestDTO employee){
         if (repository.existsByEmail(employee.email())){

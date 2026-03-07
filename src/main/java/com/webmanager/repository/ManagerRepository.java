@@ -12,4 +12,5 @@ public interface ManagerRepository  extends JpaRepository<Manager, UUID> {
 
     boolean existsByEmail(String email);
 
+    Boolean existsByCpf(String cpf);
 }

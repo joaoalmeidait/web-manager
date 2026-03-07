@@ -2,9 +2,11 @@ package com.webmanager.service;
 
 import com.webmanager.dto.EmployeeRequestDTO;
 import com.webmanager.dto.EmployeeResponseDTO;
+import com.webmanager.dto.EmployeeUpdateDTO;
 import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.entity.Employee;
 import com.webmanager.entity.Manager;
+import com.webmanager.exception.CPFAlreadyExistsException;
 import com.webmanager.exception.UserNotFoundException;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.mapper.PageMapper;
@@ -26,9 +28,11 @@ public class EmployeeService {
     private final ManagerRepository managerRepository;
     private final ValidationUtils validationUtils;
 
-    public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto){
+    public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) throws CPFAlreadyExistsException {
 
+        validationUtils.validateCPF(dto.cpf(), () -> repository.existsByCpf(dto.cpf()));
         validationUtils.validateUniqueEmail(dto.email(), () -> repository.existsByEmail(dto.email()));
+
         Manager manager = resolveManager(dto.managerId());
 
         var entity = mapper.toEntity(dto);
@@ -37,6 +41,25 @@ public class EmployeeService {
         Employee savedEmployee = repository.save(entity);
 
         return mapper.toResponse(savedEmployee);
+    }
+
+    public EmployeeResponseDTO updateEmployee(UUID id, EmployeeUpdateDTO dto) {
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Funcionário não encontrado."));
+
+        if (dto.email() != null) {
+            validationUtils.validateUniqueEmail(dto.email(), () -> repository.existsByEmail(dto.email()));
+        }
+
+        mapper.updateEmployeeFromDto(dto, employee);
+
+        if (dto.managerId() != null) {
+            employee.setManager(resolveManager(dto.managerId()));
+        }
+
+        Employee savedEmployee = repository.save(employee);
+
+        return mapper.toResponse(employee);
     }
 
     public PageResponseDTO<EmployeeResponseDTO> listAllEmployees(Pageable pageable){

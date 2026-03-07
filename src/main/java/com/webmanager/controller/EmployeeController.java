@@ -2,6 +2,7 @@ package com.webmanager.controller;
 
 import com.webmanager.dto.EmployeeRequestDTO;
 import com.webmanager.dto.EmployeeResponseDTO;
+import com.webmanager.dto.EmployeeUpdateDTO;
 import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/employees")
@@ -23,6 +26,12 @@ public class EmployeeController {
     public ResponseEntity<EmployeeResponseDTO> createEmployee(@Valid @RequestBody EmployeeRequestDTO dto){
         var employee = employeeService.createEmployee(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(employee);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EmployeeResponseDTO> updateEmployee(@Valid @PathVariable UUID id, @RequestBody EmployeeUpdateDTO dto) {
+        var employee = employeeService.updateEmployee(id, dto);
+        return ResponseEntity.ok(employee);
     }
 
     @GetMapping

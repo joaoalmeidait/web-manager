@@ -1,13 +1,16 @@
 package com.webmanager.service;
 
+import com.webmanager.BaseTest;
 import com.webmanager.dto.EmployeeRequestDTO;
 import com.webmanager.dto.EmployeeResponseDTO;
 import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.entity.Employee;
+import com.webmanager.entity.Manager;
 import com.webmanager.exception.EmailAlreadyExistsExecption;
-import com.webmanager.exception.EmployeeNotFoundExecption;
+import com.webmanager.exception.UserNotFound;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.repository.EmployeeRepository;
+import com.webmanager.repository.ManagerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,10 +30,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeServiceTest {
+class EmployeeServiceTest extends BaseTest {
 
     @Mock
     private EmployeeRepository repository;
+
+    @Mock
+    private ManagerRepository managerRepository;
 
     @Mock
     private EmployeeMapper mapper;
@@ -42,7 +48,7 @@ class EmployeeServiceTest {
     void shouldCreateEmployee() {
 
         EmployeeRequestDTO request =
-                new EmployeeRequestDTO("João", "joao@email.com", "Developer");
+                new EmployeeRequestDTO("João", "joao@email.com", "Developer", UUID.randomUUID());
 
         Employee employee = Employee.builder()
                 .name("João")
@@ -51,9 +57,10 @@ class EmployeeServiceTest {
                 .build();
 
         EmployeeResponseDTO response =
-                new EmployeeResponseDTO(UUID.randomUUID(), "João", "joao@email.com", "Developer", null);
+                new EmployeeResponseDTO(UUID.randomUUID(), "João", "joao@email.com", "Developer", null, null);
 
         when(repository.existsByEmail("joao@email.com")).thenReturn(false);
+        when(managerRepository.findById(any())).thenReturn(Optional.of(Manager.builder().id(request.managerId()).build()));
         when(mapper.toEntity(request)).thenReturn(employee);
         when(repository.save(employee)).thenReturn(employee);
         when(mapper.toResponse(employee)).thenReturn(response);
@@ -69,7 +76,7 @@ class EmployeeServiceTest {
     void shouldThrowWhenEmailAlreadyExists() {
 
         EmployeeRequestDTO request =
-                new EmployeeRequestDTO("João", "duplicate@email.com", "Developer");
+                new EmployeeRequestDTO("João", "duplicate@email.com", "Developer", null);
 
         when(repository.existsByEmail("duplicate@email.com")).thenReturn(true);
 
@@ -89,7 +96,7 @@ class EmployeeServiceTest {
                 .build();
 
         EmployeeResponseDTO response =
-                new EmployeeResponseDTO(UUID.randomUUID(), "Test", email, "Dev", null);
+                new EmployeeResponseDTO(UUID.randomUUID(), "Test", email, "Dev", null, null);
 
         when(repository.findByEmail(email)).thenReturn(Optional.of(employee));
         when(mapper.toResponse(employee)).thenReturn(response);
@@ -106,7 +113,7 @@ class EmployeeServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.findByEmail("notfound@email.com"))
-                .isInstanceOf(EmployeeNotFoundExecption.class);
+                .isInstanceOf(UserNotFound.class);
     }
 
     @Test
@@ -129,10 +136,10 @@ class EmployeeServiceTest {
         Page<Employee> page = new PageImpl<>(List.of(employee1, employee2));
 
         EmployeeResponseDTO response1 =
-                new EmployeeResponseDTO(UUID.randomUUID(), "João", "joao@email.com", "Developer", null);
+                new EmployeeResponseDTO(UUID.randomUUID(), "João", "joao@email.com", "Developer", null, null);
 
         EmployeeResponseDTO response2 =
-                new EmployeeResponseDTO(UUID.randomUUID(), "Maria", "maria@email.com", "Manager", null);
+                new EmployeeResponseDTO(UUID.randomUUID(), "Maria", "maria@email.com", "Manager", null, null);
 
         when(repository.findAll(pageable)).thenReturn(page);
         when(mapper.toResponse(employee1)).thenReturn(response1);

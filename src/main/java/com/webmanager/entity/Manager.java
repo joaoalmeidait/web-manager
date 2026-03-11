@@ -1,5 +1,6 @@
 package com.webmanager.entity;
 
+import com.webmanager.enums.Role;
 import com.webmanager.utils.CpfConverter;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,11 @@ public class Manager {
     @Column(nullable = false, unique = true, length = 11)
     @Convert(converter = CpfConverter.class)
     private String cpf;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;

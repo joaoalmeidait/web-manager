@@ -44,4 +44,9 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> hanldeInvalidCredentials(InvalidCredentialsException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
 }

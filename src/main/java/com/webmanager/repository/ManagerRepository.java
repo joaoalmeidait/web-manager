@@ -10,6 +10,8 @@ public interface ManagerRepository  extends JpaRepository<Manager, UUID> {
 
     Optional<Manager> findByName(String name);
 
+    Optional<Manager> findByEmail(String email);
+
     boolean existsByEmail(String email);
 
     Boolean existsByCpf(String cpf);

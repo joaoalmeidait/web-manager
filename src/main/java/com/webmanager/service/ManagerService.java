@@ -1,8 +1,8 @@
 package com.webmanager.service;
 
-import com.webmanager.dto.ManagerRequestDTO;
-import com.webmanager.dto.ManagerResponseDTO;
 import com.webmanager.dto.PageResponseDTO;
+import com.webmanager.dto.manager.ManagerRequestDTO;
+import com.webmanager.dto.manager.ManagerResponseDTO;
 import com.webmanager.entity.Manager;
 import com.webmanager.mapper.ManagerMapper;
 import com.webmanager.mapper.PageMapper;

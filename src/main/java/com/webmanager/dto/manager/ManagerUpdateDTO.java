@@ -1,4 +1,4 @@
-package com.webmanager.dto;
+package com.webmanager.dto.manager;
 
 import jakarta.validation.constraints.Email;
 

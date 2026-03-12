@@ -4,12 +4,14 @@ import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.dto.manager.ManagerRequestDTO;
 import com.webmanager.dto.manager.ManagerResponseDTO;
 import com.webmanager.entity.Manager;
+import com.webmanager.enums.Role;
 import com.webmanager.mapper.ManagerMapper;
 import com.webmanager.mapper.PageMapper;
 import com.webmanager.repository.ManagerRepository;
 import com.webmanager.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,13 +21,19 @@ public class ManagerService {
     private final ManagerRepository repository;
     private final ManagerMapper mapper;
     private final ValidationUtils validationUtils;
+    private final PasswordEncoder passwordEncoder;
 
     public ManagerResponseDTO createManager(ManagerRequestDTO dto){
 
         validationUtils.validateCPF(dto.cpf(), () -> repository.existsByCpf(dto.cpf()));
         validationUtils.validateUniqueEmail(dto.email(), () -> repository.existsByEmail(dto.email()));
 
-        Manager saved = repository.save(mapper.toEntity(dto));
+        var manager = mapper.toEntity(dto);
+
+        manager.setPassword(passwordEncoder.encode(dto.password()));
+        manager.setRole(Role.MANAGER);
+
+        Manager saved = repository.save(manager);
         return mapper.toResponse(saved);
     }
 

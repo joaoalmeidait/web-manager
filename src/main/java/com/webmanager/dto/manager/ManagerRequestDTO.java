@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 public record ManagerRequestDTO(@NotBlank String name,
                                 @Email @NotBlank String email,
+                                @NotBlank String password,
                                 @NotBlank String phone,
                                 @NotBlank @CPF String cpf,
                                 String address,

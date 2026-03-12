@@ -1,8 +1,8 @@
 package com.webmanager.controller;
 
-import com.webmanager.dto.ManagerRequestDTO;
-import com.webmanager.dto.ManagerResponseDTO;
 import com.webmanager.dto.PageResponseDTO;
+import com.webmanager.dto.manager.ManagerRequestDTO;
+import com.webmanager.dto.manager.ManagerResponseDTO;
 import com.webmanager.service.ManagerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

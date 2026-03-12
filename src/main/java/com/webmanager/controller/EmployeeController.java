@@ -1,9 +1,9 @@
 package com.webmanager.controller;
 
-import com.webmanager.dto.EmployeeRequestDTO;
-import com.webmanager.dto.EmployeeResponseDTO;
-import com.webmanager.dto.EmployeeUpdateDTO;
 import com.webmanager.dto.PageResponseDTO;
+import com.webmanager.dto.employee.EmployeeRequestDTO;
+import com.webmanager.dto.employee.EmployeeResponseDTO;
+import com.webmanager.dto.employee.EmployeeUpdateDTO;
 import com.webmanager.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

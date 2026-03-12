@@ -1,19 +1,16 @@
-package com.webmanager.dto;
+package com.webmanager.dto.manager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record EmployeeResponseDTO(UUID id,
+public record ManagerResponseDTO (UUID id,
                                   String name,
                                   String email,
                                   String phone,
                                   String cpf,
-                                  String role,
-                                  String address,
                                   LocalDate birthDate,
-                                  String managerName,
+                                  String address,
                                   LocalDateTime createdAt,
-                                  LocalDateTime updatedAt
-) {
+                                  LocalDateTime updatedAt) {
 }

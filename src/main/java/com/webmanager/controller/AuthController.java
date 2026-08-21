@@ -3,6 +3,7 @@ package com.webmanager.controller;
 import com.webmanager.dto.login.LoginRequestDTO;
 import com.webmanager.dto.login.LoginResponseDTO;
 import com.webmanager.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO requestDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO requestDTO) {
         return ResponseEntity.ok(authenticationService.login(requestDTO));
     }
 }

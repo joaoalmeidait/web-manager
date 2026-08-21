@@ -1,5 +1,6 @@
 package com.webmanager.entity;
 
+import com.webmanager.enums.EmployeeRole;
 import com.webmanager.utils.CpfConverter;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,7 +31,9 @@ public class Employee {
     @Column(nullable = false)
     private String phone;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EmployeeRole role;
 
     @Column(nullable = false, unique = true, length = 11)
     @Convert(converter = CpfConverter.class)

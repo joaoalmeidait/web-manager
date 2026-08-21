@@ -1,0 +1,3 @@
+UPDATE employees SET role = 'DEVELOPER' WHERE role IS NULL;
+
+ALTER TABLE employees ALTER COLUMN role SET NOT NULL;

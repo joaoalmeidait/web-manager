@@ -6,7 +6,7 @@ import com.webmanager.dto.employee.EmployeeResponseDTO;
 import com.webmanager.dto.employee.EmployeeUpdateDTO;
 import com.webmanager.entity.Employee;
 import com.webmanager.entity.Manager;
-import com.webmanager.exception.CPFAlreadyExistsException;
+import com.webmanager.enums.EmployeeRole;
 import com.webmanager.exception.UserNotFoundException;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.mapper.PageMapper;
@@ -28,7 +28,7 @@ public class EmployeeService {
     private final ManagerRepository managerRepository;
     private final ValidationUtils validationUtils;
 
-    public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) throws CPFAlreadyExistsException {
+    public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) {
 
         validationUtils.validateCPF(dto.cpf(), () -> repository.existsByCpf(dto.cpf()));
         validationUtils.validateUniqueEmail(dto.email(), () -> repository.existsByEmail(dto.email()));
@@ -57,13 +57,13 @@ public class EmployeeService {
             employee.setManager(resolveManager(dto.managerId()));
         }
 
-        Employee savedEmployee = repository.save(employee);
+        repository.save(employee);
 
         return mapper.toResponse(employee);
     }
 
-    public PageResponseDTO<EmployeeResponseDTO> listAllEmployees(Pageable pageable){
-        var page = repository.findAll(pageable)
+    public PageResponseDTO<EmployeeResponseDTO> listAllEmployees(Pageable pageable, EmployeeRole role){
+        var page = (role != null ? repository.findByRole(role, pageable) : repository.findAll(pageable))
                 .map(mapper::toResponse);
         return PageMapper.toPageResponse(page);
     }

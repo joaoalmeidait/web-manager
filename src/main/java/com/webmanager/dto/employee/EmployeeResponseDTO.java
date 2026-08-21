@@ -1,5 +1,7 @@
 package com.webmanager.dto.employee;
 
+import com.webmanager.enums.EmployeeRole;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -9,7 +11,7 @@ public record EmployeeResponseDTO(UUID id,
                                   String email,
                                   String phone,
                                   String cpf,
-                                  String role,
+                                  EmployeeRole role,
                                   String address,
                                   LocalDate birthDate,
                                   String managerName,

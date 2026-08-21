@@ -4,6 +4,7 @@ import com.webmanager.dto.PageResponseDTO;
 import com.webmanager.dto.employee.EmployeeRequestDTO;
 import com.webmanager.dto.employee.EmployeeResponseDTO;
 import com.webmanager.dto.employee.EmployeeUpdateDTO;
+import com.webmanager.enums.EmployeeRole;
 import com.webmanager.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,10 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponseDTO<EmployeeResponseDTO>> listAllEmployees(@ParameterObject Pageable pageable) {
-        var employees =  employeeService.listAllEmployees(pageable);
+    public ResponseEntity<PageResponseDTO<EmployeeResponseDTO>> listAllEmployees(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) EmployeeRole role) {
+        var employees = employeeService.listAllEmployees(pageable, role);
         return ResponseEntity.ok(employees);
     }
 

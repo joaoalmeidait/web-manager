@@ -43,7 +43,13 @@ public class EmployeeController {
         return ResponseEntity.ok(employees);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeResponseDTO> getEmployeeById(@PathVariable UUID id){
+        var employee = employeeService.findById(id);
+        return ResponseEntity.ok(employee);
+    }
+
+    @GetMapping("/email/{email}")
     public ResponseEntity<EmployeeResponseDTO> getEmployeeByEmail(@PathVariable String email){
         var employee = employeeService.findByEmail(email);
         return ResponseEntity.ok(employee);

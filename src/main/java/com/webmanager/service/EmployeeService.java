@@ -75,6 +75,13 @@ public class EmployeeService {
         return mapper.toResponse(employee);
     }
 
+    public EmployeeResponseDTO findById(UUID id) {
+        var employee = repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Funcionário não encontrado."));
+
+        return mapper.toResponse(employee);
+    }
+
     private Manager resolveManager(UUID managerId){
 
         if (managerId != null) {

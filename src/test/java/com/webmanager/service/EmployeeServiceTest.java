@@ -1,13 +1,26 @@
 package com.webmanager.service;
 
 import com.webmanager.BaseTest;
+import com.webmanager.dto.employee.EmployeeResponseDTO;
+import com.webmanager.entity.Employee;
+import com.webmanager.enums.EmployeeRole;
+import com.webmanager.exception.UserNotFoundException;
 import com.webmanager.mapper.EmployeeMapper;
 import com.webmanager.repository.EmployeeRepository;
 import com.webmanager.repository.ManagerRepository;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceTest extends BaseTest {
@@ -24,6 +37,41 @@ class EmployeeServiceTest extends BaseTest {
     @InjectMocks
     private EmployeeService service;
 
+    @Test
+    void shouldFindEmployeeById() {
+
+        UUID id = UUID.randomUUID();
+
+        Employee employee = Employee.builder()
+                .id(id)
+                .name("João")
+                .email("joao@email.com")
+                .role(EmployeeRole.DEVELOPER)
+                .build();
+
+        EmployeeResponseDTO response = new EmployeeResponseDTO(
+                id, "João", "joao@email.com", null, null, EmployeeRole.DEVELOPER, null, null, null, null, null);
+
+        when(repository.findById(id)).thenReturn(Optional.of(employee));
+        when(mapper.toResponse(employee)).thenReturn(response);
+
+        EmployeeResponseDTO result = service.findById(id);
+
+        assertThat(result.id()).isEqualTo(id);
+        verify(repository).findById(id);
+    }
+
+    @Test
+    void shouldThrowWhenEmployeeNotFoundById() {
+
+        UUID id = UUID.randomUUID();
+
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.findById(id))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
 //    @Test
 //    void shouldCreateEmployee() {
 //
@@ -33,7 +81,7 @@ class EmployeeServiceTest extends BaseTest {
 //        Employee employee = Employee.builder()
 //                .name("João")
 //                .email("joao@email.com")
-//                .role("Developer")
+//                .role(EmployeeRole.DEVELOPER)
 //                .build();
 //
 //        EmployeeResponseDTO response =
@@ -61,7 +109,7 @@ class EmployeeServiceTest extends BaseTest {
 //        when(repository.existsByEmail("duplicate@email.com")).thenReturn(true);
 //
 //        assertThatThrownBy(() -> service.createEmployee(request))
-//                .isInstanceOf(EmailAlreadyExistsExecption.class);
+//                .isInstanceOf(EmailAlreadyExistsException.class);
 //    }
 //
 //    @Test
@@ -72,7 +120,7 @@ class EmployeeServiceTest extends BaseTest {
 //        Employee employee = Employee.builder()
 //                .name("Test")
 //                .email(email)
-//                .role("Dev")
+//                .role(EmployeeRole.QA_ENGINEER)
 //                .build();
 //
 //        EmployeeResponseDTO response =
@@ -104,13 +152,13 @@ class EmployeeServiceTest extends BaseTest {
 //        Employee employee1 = Employee.builder()
 //                .name("João")
 //                .email("joao@email.com")
-//                .role("Developer")
+//                .role(EmployeeRole.DEVELOPER)
 //                .build();
 //
 //        Employee employee2 = Employee.builder()
 //                .name("Maria")
 //                .email("maria@email.com")
-//                .role("Manager")
+//                .role(EmployeeRole.DEVELOPER)
 //                .build();
 //
 //        Page<Employee> page = new PageImpl<>(List.of(employee1, employee2));
